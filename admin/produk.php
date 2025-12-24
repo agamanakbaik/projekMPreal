@@ -8,14 +8,11 @@ if (!isset($_SESSION['status_login']) || $_SESSION['status_login'] != true) {
     exit;
 }
 
-// 1. QUERY PRODUK (DIPERBAIKI)
-// Mengambil data produk + Nama Brand + Nama Kategori
-// Menghitung jumlah varian
+// 1. QUERY PRODUK
 $query_sql = "SELECT p.*, 
                      b.nama_brand, 
                      c.nama_kategori,
                      (SELECT COUNT(*) FROM product_variants WHERE product_id = p.id) as total_varian,
-                     -- Ambil harga terendah dari varian jika harga jual induk 0
                      (SELECT MIN(harga_jual) FROM product_variants WHERE product_id = p.id) as harga_terendah_varian
               FROM products p
               LEFT JOIN brands b ON p.brand_id = b.id
@@ -31,6 +28,9 @@ $query = mysqli_query($conn, $query_sql);
     <title>Kelola Produk - Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         tailwind.config = {
             theme: {
@@ -65,7 +65,7 @@ $query = mysqli_query($conn, $query_sql);
                            class="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:outline-none transition shadow-sm">
                 </div>
 
-                <a href="tambah_produk.php" class="bg-primary hover:bg-primaryHover text-white px-4 py-2 rounded-lg font-bold shadow-lg transition flex items-center gap-2 whitespace-nowrap">
+                <a href="tambah_produk" class="bg-primary hover:bg-primaryHover text-white px-4 py-2 rounded-lg font-bold shadow-lg transition flex items-center gap-2 whitespace-nowrap">
                     <i class="fas fa-plus"></i> Tambah
                 </a>
             </div>
@@ -87,10 +87,7 @@ $query = mysqli_query($conn, $query_sql);
                     <tbody class="divide-y divide-gray-100 text-sm text-gray-700">
                         <?php if(mysqli_num_rows($query) > 0): ?>
                             <?php while($row = mysqli_fetch_assoc($query)): 
-                                // Logic Harga Tampil: Jika harga induk 0, pakai harga varian terendah
                                 $harga_final = ($row['harga_jual'] > 0) ? $row['harga_jual'] : $row['harga_terendah_varian'];
-                                
-                                // Logic HPP: Jika 0, tulis "Belum Set"
                                 $hpp_tampil = ($row['hpp_modal'] > 0) ? 'Rp '.number_format($row['hpp_modal'], 0, ',', '.') : '<span class="text-red-500">Belum Set</span>';
                             ?>
                             <tr class="hover:bg-primary/5 transition item-row">
@@ -135,12 +132,15 @@ $query = mysqli_query($conn, $query_sql);
                                 </td>
                                 <td class="p-4 align-middle text-center">
                                     <div class="flex justify-center gap-2">
-                                        <a href="edit_produk.php?id=<?= $row['id'] ?>" class="w-8 h-8 flex items-center justify-center bg-blue-100 text-blue-600 rounded hover:bg-blue-600 hover:text-white transition" title="Edit">
+                                        <a href="edit_produk?id=<?= $row['id'] ?>" class="w-8 h-8 flex items-center justify-center bg-blue-100 text-blue-600 rounded hover:bg-blue-600 hover:text-white transition" title="Edit">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <a href="hapus.php?id=<?= $row['id'] ?>" onclick="return confirm('Hapus produk ini beserta variannya?')" class="w-8 h-8 flex items-center justify-center bg-red-100 text-red-600 rounded hover:bg-red-600 hover:text-white transition" title="Hapus">
+                                        
+                                        <button onclick="konfirmasiHapus(<?= $row['id'] ?>, '<?= addslashes($row['nama_produk']) ?>')" 
+                                                class="w-8 h-8 flex items-center justify-center bg-red-100 text-red-600 rounded hover:bg-red-600 hover:text-white transition" 
+                                                title="Hapus">
                                             <i class="fas fa-trash-alt"></i>
-                                        </a>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -180,6 +180,29 @@ $query = mysqli_query($conn, $query_sql);
                 }       
             }
         }
+
+        // 3. FUNGSI KONFIRMASI HAPUS SWEETALERT
+        function konfirmasiHapus(id, namaProduk) {
+            Swal.fire({
+                title: 'Yakin hapus produk ini?',
+                text: "Produk \"" + namaProduk + "\" dan semua variannya akan dihapus permanen!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Jika user klik Ya, arahkan ke file hapus.php
+                    window.location.href = "hapus?id=" + id;
+                }
+            })
+        }
+        
+        // Notifikasi Sukses Hapus (Optional: jika ada session notif)
+        // Anda bisa menambahkan logika PHP session di sini nanti
     </script>
 </body>
 </html>

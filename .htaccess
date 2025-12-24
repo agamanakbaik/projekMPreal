@@ -1,0 +1,20 @@
+RewriteEngine On
+# PENTING: Sesuaikan baris ini dengan nama folder projek kamu di htdocs
+RewriteBase /marhaban_parfume/
+
+# 1. HILANGKAN "index.php"
+# Jika user akses .../index.php, redirect ke folder induknya
+RewriteCond %{THE_REQUEST} ^.*/index\.php
+RewriteRule ^(.*)index\.php$ $1 [R=301,L]
+
+# 2. HILANGKAN EKSTENSI ".php"
+# Jika user akses file.php, redirect ke file (tanpa .php)
+RewriteCond %{THE_REQUEST} \s/+(.+?)\.php[\s?] [NC]
+# Perhatikan bagian ini, kita tambahkan RewriteBase agar tidak lari ke root localhost
+RewriteRule ^ %{ENV:BASE}/%1 [R=301,L,NE]
+
+# 3. MENGHUBUNGKAN URL CANTIK KE FILE ASLI
+# Jika user akses /login (tanpa php), server cari login.php
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.php -f
+RewriteRule ^(.*)$ $1.php [L]

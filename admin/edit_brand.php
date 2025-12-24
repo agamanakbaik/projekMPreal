@@ -83,7 +83,7 @@ if (isset($_POST['update'])) {
             </div>
             
             <div class="flex gap-3">
-                <a href="brands.php" class="flex-1 bg-gray-100 text-gray-600 font-bold py-2.5 rounded-lg text-center hover:bg-gray-200 transition">
+                <a href="brands" class="flex-1 bg-gray-100 text-gray-600 font-bold py-2.5 rounded-lg text-center hover:bg-gray-200 transition">
                     Batal
                 </a>
                 <button type="submit" name="update" class="flex-1 bg-primary hover:bg-primaryHover text-white font-bold py-2.5 rounded-lg shadow-md transition transform hover:-translate-y-0.5">

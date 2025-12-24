@@ -1,5 +1,5 @@
 <?php
-include 'config/koneksi.php';
+include 'config/kone';
 
 // Kita buat password baru: "admin" (biar gampang)
 $password_baru = "admin"; 
@@ -17,7 +17,7 @@ if (mysqli_query($conn, $query)) {
     echo "<p>User berhasil dibuat/direset.</p>";
     echo "<p>Username: <b>admin</b></p>";
     echo "<p>Password: <b>admin</b></p>";
-    echo "<br><a href='login.php'>Klik disini untuk Login</a>";
+    echo "<br><a href='login'>Klik disini untuk Login</a>";
 } else {
     echo "Gagal: " . mysqli_error($conn);
 }

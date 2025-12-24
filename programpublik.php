@@ -88,7 +88,7 @@ if (!empty($info_toko['header_program']) && file_exists('assets/img/' . $info_to
     <nav class="bg-white dark:bg-gray-800 shadow fixed w-full z-50 top-0 transition-all duration-300">
         <div class="container mx-auto px-4 py-3 flex flex-wrap md:flex-nowrap justify-between items-center gap-4">
 
-            <a href="programpublik.php" class="flex items-center gap-3 group">
+            <a href="programpublik" class="flex items-center gap-3 group">
                 <?php
                 $logo_path = 'assets/img/' . ($info_toko['logo'] ?? '');
                 if (!empty($info_toko['logo']) && file_exists($logo_path)):
@@ -108,13 +108,13 @@ if (!empty($info_toko['header_program']) && file_exists('assets/img/' . $info_to
                 </span>
             </a>
             <div class="hidden md:flex space-x-6 items-center text-sm font-medium">
-                <a href="index.php"
+                <a href="index"
                     class="text-gray-600 dark:text-gray-300 hover:text-primary-500 transition">Beranda</a>
-                <a href="profil.php" class="text-gray-600 dark:text-gray-300 hover:text-primary-500 transition">Profil
+                <a href="profil" class="text-gray-600 dark:text-gray-300 hover:text-primary-500 transition">Profil
                     Kami</a>
-                <a href="index.php#katalog"
+                <a href="index#katalog"
                     class="text-gray-600 dark:text-gray-300 hover:text-primary-500 transition">Katalog</a>
-                <a href="programpublik.php"
+                <a href="programpublik"
                     class="text-primary-500 font-bold border-b-2 border-primary-500 transition">Program Kami</a>
             </div>
 
@@ -130,42 +130,60 @@ if (!empty($info_toko['header_program']) && file_exists('assets/img/' . $info_to
 
     <nav
         class="md:hidden fixed bottom-0 left-0 w-full bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 flex justify-around py-2 z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
-        <a href="index.php"
+        <a href="index"
             class="flex flex-col items-center justify-center w-full text-gray-500 dark:text-gray-400 hover:text-primary-500 transition"><i
                 class="fas fa-home text-lg mb-1"></i><span class="text-[10px] font-medium">Beranda</span></a>
-        <a href="profil.php"
+        <a href="profil"
             class="flex flex-col items-center justify-center w-full text-gray-500 dark:text-gray-400 hover:text-primary-500 transition"><i
                 class="fas fa-store text-lg mb-1"></i><span class="text-[10px] font-medium">Profil</span></a>
-        <a href="index.php#katalog"
+        <a href="index#katalog"
             class="flex flex-col items-center justify-center w-full text-gray-500 dark:text-gray-400 hover:text-primary-500 transition">
             <div
                 class="bg-gray-100 dark:bg-gray-700 p-2 rounded-full -mt-6 border-4 border-gray-50 dark:border-gray-900 group-hover:bg-primary-50 transition">
                 <i class="fas fa-box-open text-gray-500 dark:text-gray-400 text-xl group-hover:text-primary-500"></i>
             </div><span class="text-[10px] font-medium mt-1">Katalog</span>
         </a>
-        <a href="programpublik.php"
+        <a href="programpublik"
             class="flex flex-col items-center justify-center w-full text-primary-500 transition"><i
                 class="fas fa-bullhorn text-lg mb-1"></i><span class="text-[10px] font-medium">Program</span></a>
     </nav>
 
-    <header class="relative mt-20 h-72 flex items-center justify-center bg-gray-900 overflow-hidden">
+    <header class="relative mt-20 w-full">
+        
         <?php if (!empty($bg_header) && file_exists($bg_header)): ?>
-            <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('<?= $bg_header ?>');"></div>
-            <div class="absolute inset-0 bg-black/60 backdrop-blur-[2px]"></div>
-        <?php else: ?>
-            <div class="absolute inset-0 bg-primary-700"></div>
-            <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]">
+            
+            <div class="relative w-full">
+                <img src="<?= $bg_header ?>" alt="Banner Program" class="w-full h-auto object-cover" style="max-height: 600px;">
+                
+                <div class="absolute inset-0 bg-black/50 flex items-center justify-center">
+                    <div class="text-center px-4">
+                        <h1 class="text-2xl md:text-5xl font-extrabold text-white mb-2 drop-shadow-lg tracking-tight">
+                            Program & Layanan
+                        </h1>
+                        <p class="text-gray-100 text-sm md:text-lg font-medium max-w-2xl mx-auto drop-shadow-md leading-relaxed hidden md:block">
+                            Temukan berbagai penawaran menarik, paket usaha, dan layanan terbaik eksklusif untuk Anda.
+                        </p>
+                    </div>
+                </div>
             </div>
-            <div class="absolute inset-0 bg-gradient-to-r from-primary-900 to-primary-600 opacity-90"></div>
-        <?php endif; ?>
 
-        <div class="relative z-10 text-center px-4">
-            <h1 class="text-3xl md:text-5xl font-extrabold text-white mb-3 drop-shadow-lg tracking-tight">Program &
-                Layanan</h1>
-            <p class="text-gray-100 text-base md:text-lg font-medium max-w-2xl mx-auto drop-shadow-md leading-relaxed">
-                Temukan berbagai penawaran menarik, paket usaha, dan layanan terbaik eksklusif untuk Anda.
-            </p>
-        </div>
+        <?php else: ?>
+
+            <div class="h-72 flex items-center justify-center bg-primary-700 relative overflow-hidden">
+                <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-primary-900 to-primary-600 opacity-90"></div>
+                
+                <div class="relative z-10 text-center px-4">
+                    <h1 class="text-3xl md:text-5xl font-extrabold text-white mb-3 drop-shadow-lg tracking-tight">
+                        Program & Layanan
+                    </h1>
+                    <p class="text-gray-100 text-base md:text-lg font-medium max-w-2xl mx-auto drop-shadow-md leading-relaxed">
+                        Temukan berbagai penawaran menarikdan layanan terbaik eksklusif untuk Anda.
+                    </p>
+                </div>
+            </div>
+
+        <?php endif; ?>
     </header>
 
     <main class="container mx-auto px-4 py-12 flex-1">
@@ -254,7 +272,7 @@ if (!empty($info_toko['header_program']) && file_exists('assets/img/' . $info_to
                 <h3 class="text-2xl font-bold text-gray-600 dark:text-gray-400 mb-2">Belum ada program aktif</h3>
                 <p class="text-gray-500 dark:text-gray-500 max-w-md mx-auto">Kami sedang menyiapkan program menarik untuk
                     Anda. Nantikan update terbaru dari kami segera!</p>
-                <a href="index.php"
+                <a href="index"
                     class="mt-8 px-6 py-2.5 rounded-full border-2 border-primary-500 text-primary-500 font-bold hover:bg-primary-500 hover:text-white transition">
                     Kembali ke Beranda
                 </a>

@@ -3,10 +3,14 @@ include 'config/koneksi.php';
 
 $id_produk = $_GET['id'];
 
-// 1. UPDATE QUERY: Tambahkan LEFT JOIN ke tabel brands
-$query = mysqli_query($conn, "SELECT products.*, brands.nama_brand 
+// 1. UPDATE QUERY: Join Brands & Categories
+// Kita ambil nama_brand dan nama_kategori sekaligus
+$query = mysqli_query($conn, "SELECT products.*, 
+                                     brands.nama_brand, 
+                                     categories.nama_kategori 
                               FROM products 
                               LEFT JOIN brands ON products.brand_id = brands.id 
+                              LEFT JOIN categories ON products.category_id = categories.id 
                               WHERE products.id='$id_produk'");
 $data = mysqli_fetch_assoc($query);
 
@@ -23,8 +27,15 @@ while ($row = mysqli_fetch_assoc($query_varian)) {
     $varian[] = $row;
 }
 
-// Jika tidak ada varian, pakai harga default produk
+// Default Values (Akan di-overwrite oleh JS jika ada varian)
 $harga_default = $data['harga_jual'];
+$ukuran_default = "Standard"; 
+
+// Jika ada varian, set default ke varian pertama (termurah karena ORDER BY ASC)
+if (!empty($varian)) {
+    $harga_default = $varian[0]['harga_jual'];
+    $ukuran_default = $varian[0]['ukuran'];
+}
 ?>
 
 <!DOCTYPE html>
@@ -53,7 +64,7 @@ $harga_default = $data['harga_jual'];
 
     <div class="container mx-auto px-4 max-w-5xl relative">
         
-        <a href="index.php" class="absolute -top-4 -right-2 md:-right-4 z-50 bg-red-500 hover:bg-red-600 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg transition transform hover:scale-110 border-2 border-white">
+        <a href="index" class="absolute -top-4 -right-2 md:-right-4 z-50 bg-red-500 hover:bg-red-600 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg transition transform hover:scale-110 border-2 border-white">
             <i class="fas fa-times text-xl"></i>
         </a>
 
@@ -63,7 +74,7 @@ $harga_default = $data['harga_jual'];
                 <img src="assets/img/<?= $data['foto'] ?>" alt="Foto Produk" class="w-full h-96 md:h-full object-cover transition duration-500 group-hover:scale-105">
                 
                 <span class="absolute top-4 left-4 bg-primary-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase shadow-md">
-                    <?= $data['kategori'] ?>
+                    <?= $data['nama_kategori'] ?? 'Umum' ?>
                 </span>
             </div>
 
@@ -86,9 +97,12 @@ $harga_default = $data['harga_jual'];
                     <div class="mb-6">
                         <label class="block text-gray-800 font-bold mb-3 text-sm uppercase tracking-wide">Pilih Ukuran:</label>
                         <div class="flex flex-wrap gap-3">
-                            <?php foreach ($varian as $v): ?>
+                            <?php foreach ($varian as $index => $v): 
+                                // Cek apakah ini varian pertama (default)
+                                $isActive = ($index === 0) ? 'bg-primary-500 text-white border-primary-500' : 'border-gray-200 text-gray-600';
+                            ?>
                                 <button onclick="pilihVarian(this, '<?= $v['ukuran'] ?>', <?= $v['harga_jual'] ?>)"
-                                    class="btn-varian border-2 border-gray-200 text-gray-600 px-4 py-2 rounded-lg font-medium hover:border-primary-500 hover:text-primary-500 transition duration-200">
+                                    class="btn-varian border-2 px-4 py-2 rounded-lg font-medium hover:border-primary-500 hover:text-primary-500 transition duration-200 <?= $isActive ?>">
                                     <?= $v['ukuran'] ?>
                                 </button>
                             <?php endforeach; ?>
@@ -124,7 +138,7 @@ $harga_default = $data['harga_jual'];
         
         let noWA = "<?= $info_toko['no_wa'] ?>"; 
         let hargaSekarang = <?= $harga_default ?>;
-        let ukuranTerpilih = "Standard";
+        let ukuranTerpilih = "<?= $ukuran_default ?>";
 
         // Fungsi update link WA
         function updateLink() {
@@ -135,15 +149,13 @@ $harga_default = $data['harga_jual'];
 
         // Fungsi saat tombol varian diklik
         function pilihVarian(el, ukuran, harga) {
-            // Reset style tombol lain
+            // Reset style semua tombol
             document.querySelectorAll('.btn-varian').forEach(btn => {
-                // Hapus warna Primary (Tosca)
                 btn.classList.remove('bg-primary-500', 'text-white', 'border-primary-500');
-                // Tambah warna Gray (Default)
                 btn.classList.add('border-gray-200', 'text-gray-600');
             });
 
-            // Highlight tombol aktif (Tosca Solid)
+            // Highlight tombol aktif
             el.classList.remove('border-gray-200', 'text-gray-600');
             el.classList.add('bg-primary-500', 'text-white', 'border-primary-500');
 

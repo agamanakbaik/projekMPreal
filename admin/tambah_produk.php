@@ -41,7 +41,7 @@ $json_rules = json_encode($rules_array);
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-2xl font-bold text-gray-800">Input Produk</h2>
             <div class="flex gap-4 items-center">
-                <a href="kategori.php" target="_blank" class="text-sm text-primary hover:text-primaryHover font-bold underline">
+                <a href="kategori" target="_blank" class="text-sm text-primary hover:text-primaryHover font-bold underline">
                     <i class="fas fa-tags mr-1"></i> Kelola Kategori
                 </a>
                 <div id="loading_indicator" class="hidden text-primary font-bold animate-pulse flex items-center gap-2">

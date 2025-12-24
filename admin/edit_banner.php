@@ -62,7 +62,7 @@ if (isset($_POST['update'])) {
             
             <div class="flex gap-2">
                 <button type="submit" name="update" class="flex-1 bg-blue-600 text-white font-bold py-2 rounded hover:bg-blue-700">Simpan</button>
-                <a href="banner.php" class="flex-1 bg-gray-300 text-gray-700 font-bold py-2 rounded text-center hover:bg-gray-400">Batal</a>
+                <a href="banner" class="flex-1 bg-gray-300 text-gray-700 font-bold py-2 rounded text-center hover:bg-gray-400">Batal</a>
             </div>
         </form>
     </div>

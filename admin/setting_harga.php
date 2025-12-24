@@ -29,7 +29,7 @@ $rules = mysqli_query($conn, "SELECT pricing_rules.*, categories.nama_kategori
                     <td class="p-3">x<?= $r['pengali'] ?></td>
                     <td class="p-3 text-blue-600 font-bold"><?= $r['margin_persen'] ?>%</td>
                     <td class="p-3">
-                        <a href="edit_rule.php?id=<?= $r['id'] ?>" class="text-sm bg-gray-200 px-2 py-1 rounded">Edit</a>
+                        <a href="edit_rule?id=<?= $r['id'] ?>" class="text-sm bg-gray-200 px-2 py-1 rounded">Edit</a>
                     </td>
                 </tr>
                 <?php endwhile; ?>

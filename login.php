@@ -2,6 +2,20 @@
 session_start();
 include 'config/koneksi.php';
 
+// --- TAMBAHAN HEADER ANTI CACHE ---
+// Ini memaksa browser untuk TIDAK MENYIMPAN tampilan login di memori
+header("Cache-Control: no-cache, no-store, must-revalidate"); // HTTP 1.1.
+header("Pragma: no-cache"); // HTTP 1.0.
+header("Expires: 0"); // Proxies.
+// ----------------------------------
+
+// --- CEK STATUS LOGIN (VERSI KUAT) ---
+if (isset($_SESSION['status_login']) && $_SESSION['status_login'] == true) {
+    header("Location: admin/index.php"); // Lempar pakai PHP
+    exit; // Stop loading sisa halaman
+}
+// --------------------------------------------------
+
 if (isset($_POST['login'])) {
     $username = mysqli_real_escape_string($conn, $_POST['username']);
     $password = $_POST['password'];
@@ -11,13 +25,13 @@ if (isset($_POST['login'])) {
         $data = mysqli_fetch_assoc($cek);
         if (password_verify($password, $data['password'])) {
             
-            // --- SETTING SESSION (PENTING) ---
-            $_SESSION['status_login'] = true; // <--- INI YANG KURANG TADI
-            $_SESSION['user_id'] = $data['id'];
-            $_SESSION['role']    = $data['role']; // Pastikan di DB kolomnya 'role' (enum: admin, superadmin)
-            $_SESSION['nama']    = $data['username'];
+            // --- SETTING SESSION ---
+            $_SESSION['status_login'] = true; 
+            $_SESSION['user_id']      = $data['id'];
+            $_SESSION['role']         = $data['role']; 
+            $_SESSION['nama']         = $data['username'];
             
-            echo '<script>window.location="admin/index.php"</script>';
+            header("Location: admin/index");
             exit;
         }
     }
@@ -35,7 +49,7 @@ if (isset($_POST['login'])) {
             theme: {
                 extend: {
                     colors: {
-                        primary: '#09AFB5', // Warna Tema Baru
+                        primary: '#09AFB5',
                         primaryHover: '#078d91',
                     }
                 }
@@ -67,7 +81,7 @@ if (isset($_POST['login'])) {
             </button>
         </form>
         
-        <a href="index.php" class="block mt-6 text-center text-sm text-gray-500 hover:text-primary transition">
+        <a href="index" class="block mt-6 text-center text-sm text-gray-500 hover:text-primary transition">
             <i class="fas fa-arrow-left"></i> Kembali ke Website
         </a>
     </div>

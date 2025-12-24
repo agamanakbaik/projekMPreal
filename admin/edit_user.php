@@ -52,7 +52,7 @@ if (isset($_POST['update'])) {
                 $password_lama = $_POST['password_lama'];
                 
                 if (empty($password_lama)) {
-                    $error = "Harap masukkan Password Lama untuk konfirmasi!";
+                    $error = "Gagal! Password Lama wajib diisi untuk konfirmasi perubahan.";
                 } elseif (!password_verify($password_lama, $data['password'])) {
                     $error = "Password Lama SALAH! Perubahan ditolak.";
                 }
@@ -103,7 +103,11 @@ if (isset($_POST['update'])) {
 <body class="bg-gray-100 flex items-center justify-center h-screen">
     
     <div class="bg-white p-8 rounded-xl shadow-lg w-96 border-t-4 border-yellow-500">
-        <h2 class="text-2xl font-bold mb-1 text-gray-800">Edit User</h2>
+        
+        <h2 id="judulRahasia" class="text-2xl font-bold mb-1 text-gray-800 select-none cursor-default" onclick="hitungKlik()">
+            Edit User
+        </h2>
+
         <p class="text-sm text-gray-500 mb-6">
             <?php if($is_self_edit): ?>
                 Mengubah profil <b>Anda sendiri</b>.
@@ -124,7 +128,6 @@ if (isset($_POST['update'])) {
             </div>
 
             <hr class="my-4 border-gray-200">
-            <p class="text-xs text-gray-400 mb-2 font-bold uppercase tracking-wider">Ubah Password</p>
             
             <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2">Password Baru</label>
@@ -137,22 +140,22 @@ if (isset($_POST['update'])) {
             </div>
 
             <?php if($is_self_edit): ?>
-                <div class="mb-6 bg-yellow-50 p-3 rounded-lg border border-yellow-200">
+                <div id="boxPasswordLama" class="hidden mb-6 bg-yellow-50 p-3 rounded-lg border border-yellow-200 animate-pulse">
                     <label class="block text-yellow-800 text-sm font-bold mb-2">
-                        <i class="fas fa-shield-alt mr-1"></i> Password Lama Anda
+                        <i class="fas fa-shield-alt mr-1"></i> Password Lama
                     </label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-yellow-600">
                             <i class="fas fa-lock"></i>
                         </span>
-                        <input type="password" name="password_lama" class="w-full border border-yellow-300 pl-10 pr-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 bg-white" placeholder="Wajib jika ganti password">
+                        <input type="password" name="password_lama" class="w-full border border-yellow-300 pl-10 pr-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 bg-white" placeholder="Masukkan password lama">
                     </div>
-                    <p class="text-[10px] text-yellow-700 mt-1">*Demi keamanan, masukkan password lama untuk menyimpan perubahan password baru.</p>
+                    <p class="text-[10px] text-yellow-700 mt-1">*Demi keamanan, verifikasi password lama diperlukan.</p>
                 </div>
             <?php endif; ?>
 
             <div class="flex gap-3 mt-6">
-                <a href="users.php" class="flex-1 bg-gray-100 text-gray-600 py-2 rounded-lg text-center font-bold hover:bg-gray-200 transition">Batal</a>
+                <a href="users" class="flex-1 bg-gray-100 text-gray-600 py-2 rounded-lg text-center font-bold hover:bg-gray-200 transition">Batal</a>
                 <button type="submit" name="update" class="flex-1 bg-yellow-500 text-white py-2 rounded-lg font-bold hover:bg-yellow-600 transition shadow-md">Update</button>
             </div>
         </form>
@@ -164,9 +167,47 @@ if (isset($_POST['update'])) {
                 icon: 'error',
                 title: 'Gagal!',
                 text: '<?= $error ?>',
-                confirmButtonColor: '#eab308' // Warna kuning sesuai tema edit
+                confirmButtonColor: '#eab308'
             });
         <?php endif; ?>
+
+        // --- LOGIKA RAHASIA TANPA JEJAK ---
+        let hitungan = 0;
+        const targetKlik = 20; 
+        const boxPass = document.getElementById('boxPasswordLama');
+
+        function hitungKlik() {
+            // Cek jika box masih tersembunyi
+            if(boxPass && boxPass.classList.contains('hidden')) {
+                hitungan++;
+                
+                // Tidak ada console.log atau visual counter agar tidak ketahuan
+
+                // Jika mencapai target
+                if(hitungan >= targetKlik) {
+                    // Munculkan kolom
+                    boxPass.classList.remove('hidden'); 
+                    
+                    // Matikan animasi kedip setelah 1 detik
+                    setTimeout(() => {
+                        boxPass.classList.remove('animate-pulse');
+                    }, 1000);
+                    
+                    // Notif kecil (Toast) di pojok kanan atas
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Mode Keamanan Dibuka'
+                    });
+                }
+            }
+        }
     </script>
 
 </body>

@@ -130,7 +130,7 @@ if (isset($_GET['hapus'])) {
                                     <td class="p-4 font-bold text-gray-800 text-base"><?= $b['nama_brand'] ?></td>
                                     <td class="p-4 text-center">
                                         <div class="flex justify-center gap-2">
-                                            <a href="edit_brand.php?id=<?= $b['id'] ?>" class="w-8 h-8 flex items-center justify-center bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition shadow-sm" title="Edit">
+                                            <a href="edit_brand?id=<?= $b['id'] ?>" class="w-8 h-8 flex items-center justify-center bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition shadow-sm" title="Edit">
                                                 <i class="fas fa-edit"></i>
                                             </a>
                                             

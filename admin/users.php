@@ -73,7 +73,7 @@ $query = mysqli_query($conn, "SELECT * FROM users ORDER BY role DESC, username A
                 <p class="text-gray-500 text-sm mt-1">Kelola akun staff dan admin toko.</p>
             </div>
             
-            <a href="tambah_user.php" class="bg-primary hover:bg-primaryHover text-white px-5 py-2.5 rounded-lg font-bold shadow-lg transition flex items-center gap-2">
+            <a href="tambah_user" class="bg-primary hover:bg-primaryHover text-white px-5 py-2.5 rounded-lg font-bold shadow-lg transition flex items-center gap-2">
                 <i class="fas fa-user-plus"></i> Tambah Admin Baru
             </a>
         </div>
@@ -137,7 +137,7 @@ $query = mysqli_query($conn, "SELECT * FROM users ORDER BY role DESC, username A
 
                             <td class="p-4 text-center align-middle">
                                 <div class="flex justify-center gap-2">
-                                    <a href="edit_user.php?id=<?= $row['id'] ?>" class="w-8 h-8 flex items-center justify-center bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition" title="Ganti Password / Edit">
+                                    <a href="edit_user?id=<?= $row['id'] ?>" class="w-8 h-8 flex items-center justify-center bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition" title="Ganti Password / Edit">
                                         <i class="fas fa-key"></i>
                                     </a>
 

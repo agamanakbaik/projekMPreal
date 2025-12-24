@@ -80,7 +80,7 @@ if (isset($_POST['simpan'])) {
             </div>
 
             <div class="flex gap-3">
-                <a href="users.php" class="flex-1 bg-gray-100 text-gray-600 py-2 rounded-lg text-center font-bold hover:bg-gray-200 transition">Batal</a>
+                <a href="users" class="flex-1 bg-gray-100 text-gray-600 py-2 rounded-lg text-center font-bold hover:bg-gray-200 transition">Batal</a>
                 <button type="submit" name="simpan" class="flex-1 bg-primary text-white py-2 rounded-lg font-bold hover:bg-primaryHover transition shadow-md">Simpan</button>
             </div>
         </form>

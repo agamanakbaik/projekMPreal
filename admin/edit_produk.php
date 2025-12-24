@@ -93,7 +93,7 @@ $q_var  = mysqli_query($conn, "SELECT * FROM product_variants WHERE product_id='
         
         <div class="flex justify-between items-center mb-6">
             <div>
-                <a href="produk.php" class="text-sm text-gray-500 hover:text-primary mb-1 inline-block">
+                <a href="produk" class="text-sm text-gray-500 hover:text-primary mb-1 inline-block">
                     <i class="fas fa-arrow-left mr-1"></i> Kembali ke Daftar
                 </a>
                 <h1 class="text-2xl font-bold text-gray-800">Edit Produk</h1>
