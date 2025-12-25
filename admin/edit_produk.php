@@ -4,7 +4,7 @@ include '../config/koneksi.php';
 
 // Cek Login
 if (!isset($_SESSION['status_login']) || $_SESSION['status_login'] != true) {
-    header("Location: ../login.php");
+    header("Location: ../login");
     exit;
 }
 
@@ -39,7 +39,7 @@ if (isset($_POST['update_produk'])) {
     } else {
         $_SESSION['notif'] = ['type' => 'error', 'text' => 'Gagal mengupdate data.'];
     }
-    header("Location: edit_produk.php?id=$id");
+    header("Location: edit_produk?id=$id");
     exit;
 }
 
@@ -51,7 +51,7 @@ if (isset($_POST['tambah_varian'])) {
     if(mysqli_query($conn, "INSERT INTO product_variants (product_id, ukuran, harga_jual) VALUES ('$id', '$ukuran', '$harga')")){
         $_SESSION['notif'] = ['type' => 'success', 'text' => 'Varian Baru Ditambahkan!'];
     }
-    header("Location: edit_produk.php?id=$id");
+    header("Location: edit_produk?id=$id");
     exit;
 }
 
@@ -60,7 +60,7 @@ if (isset($_GET['hapus_varian'])) {
     $id_var = $_GET['hapus_varian'];
     mysqli_query($conn, "DELETE FROM product_variants WHERE id='$id_var'");
     $_SESSION['notif'] = ['type' => 'success', 'text' => 'Varian Berhasil Dihapus!'];
-    header("Location: edit_produk.php?id=$id");
+    header("Location: edit_produk?id=$id");
     exit;
 }
 

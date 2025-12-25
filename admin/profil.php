@@ -4,7 +4,7 @@ include '../config/koneksi.php';
 
 // Cek Login
 if (!isset($_SESSION['status_login']) || $_SESSION['status_login'] != true) {
-    header("Location: ../login.php");
+    header("Location: ../login");
     exit;
 }
 
@@ -77,7 +77,7 @@ if (isset($_POST['simpan'])) {
     }
 
     $_SESSION['notif'] = ['type' => 'success', 'text' => 'Data Toko Berhasil Diupdate!'];
-    header("Location: profil.php");
+    header("Location: profil");
     exit;
 }
 

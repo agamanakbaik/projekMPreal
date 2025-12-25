@@ -4,12 +4,12 @@ include '../config/koneksi.php';
 
 // CEK KEAMANAN
 if (!isset($_SESSION['status_login']) || ($_SESSION['role'] != 'super_admin' && $_SESSION['role'] != 'superadmin')) {
-    header("Location: index.php"); exit;
+    header("Location: index"); exit;
 }
 
 // AMBIL ID DARI URL
 if (!isset($_GET['id'])) {
-    header("Location: users.php"); exit;
+    header("Location: users"); exit;
 }
 $id = $_GET['id'];
 $id_login = $_SESSION['user_id'];
@@ -23,7 +23,7 @@ $data = mysqli_fetch_assoc($query);
 
 // Jika user tidak ditemukan
 if (!$data) {
-    header("Location: users.php"); exit;
+    header("Location: users"); exit;
 }
 
 // PROSES UPDATE
@@ -73,7 +73,7 @@ if (isset($_POST['update'])) {
         if (!$error) {
             if(mysqli_query($conn, $q_update)){
                 $_SESSION['notif'] = ['type' => 'success', 'text' => 'Data User Berhasil Diupdate!'];
-                header("Location: users.php");
+                header("Location: users");
                 exit;
             } else {
                 $error = "Terjadi kesalahan database.";

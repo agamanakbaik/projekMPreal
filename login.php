@@ -11,7 +11,7 @@ header("Expires: 0"); // Proxies.
 
 // --- CEK STATUS LOGIN (VERSI KUAT) ---
 if (isset($_SESSION['status_login']) && $_SESSION['status_login'] == true) {
-    header("Location: admin/index.php"); // Lempar pakai PHP
+    header("Location: admin/"); // Lempar pakai PHP
     exit; // Stop loading sisa halaman
 }
 // --------------------------------------------------
@@ -31,7 +31,7 @@ if (isset($_POST['login'])) {
             $_SESSION['role']         = $data['role']; 
             $_SESSION['nama']         = $data['username'];
             
-            header("Location: admin/index");
+            header("Location: admin/");
             exit;
         }
     }

@@ -2,7 +2,7 @@
 session_start();
 include '../config/koneksi.php';
 
-if (!isset($_SESSION['user_id'])) { header("Location: ../login.php"); exit; }
+if (!isset($_SESSION['user_id'])) { header("Location: ../login"); exit; }
 
 // Ambil ID dari URL
 $id = $_GET['id'];
@@ -28,7 +28,7 @@ if (isset($_POST['update'])) {
     }
 
     if (mysqli_query($conn, $sql)) {
-        echo "<script>alert('Banner Berhasil Diupdate!'); window.location='banner.php';</script>";
+        echo "<script>alert('Banner Berhasil Diupdate!'); window.location='banner';</script>";
     }
 }
 ?>

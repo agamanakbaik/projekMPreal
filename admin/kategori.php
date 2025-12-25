@@ -4,7 +4,7 @@ include '../config/koneksi.php';
 
 // Cek Login
 if (!isset($_SESSION['status_login']) || $_SESSION['status_login'] != true) {
-    header("Location: ../login.php");
+    header("Location: ../login");
     exit;
 }
 
@@ -22,7 +22,7 @@ if (isset($_POST['tambah'])) {
     } else {
         $_SESSION['notif'] = ['type' => 'error', 'text' => 'Gagal menambahkan data.'];
     }
-    header("Location: kategori.php");
+    header("Location: kategori");
     exit;
 }
 
@@ -36,7 +36,7 @@ if (isset($_GET['hapus'])) {
     } else {
         $_SESSION['notif'] = ['type' => 'error', 'text' => 'Gagal menghapus data.'];
     }
-    header("Location: kategori.php");
+    header("Location: kategori");
     exit;
 }
 ?>

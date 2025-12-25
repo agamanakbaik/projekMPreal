@@ -4,7 +4,7 @@ include '../config/koneksi.php';
 
 // CEK KEAMANAN
 if (!isset($_SESSION['status_login']) || ($_SESSION['role'] != 'super_admin' && $_SESSION['role'] != 'superadmin')) {
-    header("Location: index.php"); exit;
+    header("Location: index"); exit;
 }
 
 // PROSES SIMPAN
@@ -24,7 +24,7 @@ if (isset($_POST['simpan'])) {
         if(mysqli_query($conn, $query)){
             // Jika sukses, buat session notif dan redirect ke users.php
             $_SESSION['notif'] = ['type' => 'success', 'text' => 'Admin Baru Berhasil Ditambahkan!'];
-            header("Location: users.php");
+            header("Location: users");
             exit;
         } else {
             $error = "Gagal menyimpan data ke database.";

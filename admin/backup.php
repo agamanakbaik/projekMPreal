@@ -4,7 +4,7 @@ include '../config/koneksi.php';
 
 // CEK KEAMANAN (Hanya Super Admin)
 if (!isset($_SESSION['status_login']) || ($_SESSION['role'] != 'super_admin' && $_SESSION['role'] != 'superadmin')) {
-    header("Location: index.php"); exit;
+    header("Location: index"); exit;
 }
 
 // --- LOGIKA BACKUP (Hanya jalan jika ada parameter ?proses=1) ---

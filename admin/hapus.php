@@ -2,7 +2,7 @@
 session_start();
 include '../config/koneksi.php';
 
-if (!isset($_SESSION['user_id'])) { header("Location: ../login.php"); exit; }
+if (!isset($_SESSION['user_id'])) { header("Location: ../login"); exit; }
 
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
@@ -21,6 +21,6 @@ if (isset($_GET['id'])) {
     // data di tabel product_variants juga otomatis terhapus.
     mysqli_query($conn, "DELETE FROM products WHERE id='$id'");
     
-    header("Location: produk.php");
+    header("Location: produk");
 }
 ?>

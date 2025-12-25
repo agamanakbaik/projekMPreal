@@ -16,7 +16,7 @@ $data = mysqli_fetch_assoc($query);
 
 // Cek jika produk tidak ditemukan (jaga-jaga error)
 if (!$data) {
-    echo "<script>alert('Produk tidak ditemukan!'); window.location='index.php';</script>";
+    echo "<script>alert('Produk tidak ditemukan!'); window.location='index';</script>";
     exit;
 }
 

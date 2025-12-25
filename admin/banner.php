@@ -4,7 +4,7 @@ include '../config/koneksi.php';
 
 // Cek Login
 if (!isset($_SESSION['status_login']) || $_SESSION['status_login'] != true) {
-    header("Location: ../login.php");
+    header("Location: ../login");
     exit;
 }
 
@@ -34,7 +34,7 @@ if (isset($_POST['upload'])) {
             $_SESSION['notif'] = ['type' => 'error', 'text' => 'Format harus JPG, PNG, atau WEBP!'];
         }
     }
-    header("Location: banner.php");
+    header("Location: banner");
     exit;
 }
 
@@ -56,7 +56,7 @@ if (isset($_GET['hapus'])) {
     } else {
         $_SESSION['notif'] = ['type' => 'error', 'text' => 'Gagal menghapus data.'];
     }
-    header("Location: banner.php");
+    header("Location: banner");
     exit;
 }
 ?>

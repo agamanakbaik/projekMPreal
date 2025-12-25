@@ -4,7 +4,7 @@ include '../config/koneksi.php';
 
 // Cek Login (Semua Admin boleh akses)
 if (!isset($_SESSION['status_login']) || $_SESSION['status_login'] != true) {
-    header("Location: ../login.php");
+    header("Location: ../login");
     exit;
 }
 
@@ -37,7 +37,7 @@ if (isset($_POST['simpan'])) {
     } else {
         $_SESSION['notif'] = ['type' => 'warning', 'text' => 'Format file harus JPG, PNG, atau WEBP!'];
     }
-    header("Location: kelola_galeri.php");
+    header("Location: kelola_galeri");
     exit;
 }
 
@@ -59,7 +59,7 @@ if (isset($_GET['hapus'])) {
             $_SESSION['notif'] = ['type' => 'error', 'text' => 'Gagal menghapus data.'];
         }
     }
-    header("Location: kelola_galeri.php");
+    header("Location: kelola_galeri");
     exit;
 }
 ?>

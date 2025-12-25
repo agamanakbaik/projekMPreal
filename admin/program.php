@@ -4,7 +4,7 @@ include '../config/koneksi.php';
 
 // Cek Login
 if (!isset($_SESSION['status_login']) || $_SESSION['status_login'] != true) {
-    header("Location: ../login.php");
+    header("Location: ../login");
     exit;
 }
 
@@ -20,7 +20,7 @@ if (isset($_POST['update_wa'])) {
     } else {
         $_SESSION['notif'] = ['type' => 'error', 'text' => 'Gagal mengupdate nomor WA.'];
     }
-    header("Location: program.php");
+    header("Location: program");
     exit;
 }
 
@@ -54,7 +54,7 @@ if (isset($_POST['simpan_header'])) {
             $_SESSION['notif'] = ['type' => 'error', 'text' => 'Format file tidak valid (Gunakan JPG/PNG/WEBP)'];
         }
     }
-    header("Location: program.php");
+    header("Location: program");
     exit;
 }
 
@@ -88,7 +88,7 @@ if (isset($_POST['simpan'])) {
     } else {
         $_SESSION['notif'] = ['type' => 'error', 'text' => 'Gagal menyimpan program.'];
     }
-    header("Location: program.php");
+    header("Location: program");
     exit;
 }
 
@@ -113,7 +113,7 @@ if (isset($_GET['hapus'])) {
     } else {
         $_SESSION['notif'] = ['type' => 'error', 'text' => 'Gagal menghapus data.'];
     }
-    header("Location: program.php");
+    header("Location: program");
     exit;
 }
 

@@ -4,7 +4,7 @@ include '../config/koneksi.php';
 
 // CEK KEAMANAN
 if (!isset($_SESSION['status_login']) || ($_SESSION['role'] != 'super_admin' && $_SESSION['role'] != 'superadmin')) {
-    echo "<script>alert('Akses Ditolak!'); window.location='index.php';</script>";
+    echo "<script>alert('Akses Ditolak!'); window.location='index';</script>";
     exit;
 }
 
@@ -31,7 +31,7 @@ if (isset($_GET['hapus'])) {
             }
         }
     }
-    header("Location: users.php");
+    header("Location: users");
     exit;
 }
 

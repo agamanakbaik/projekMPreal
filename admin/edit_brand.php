@@ -4,7 +4,7 @@ include '../config/koneksi.php';
 
 // Cek Login
 if (!isset($_SESSION['status_login']) || $_SESSION['status_login'] != true) {
-    header("Location: ../login.php");
+    header("Location: ../login");
     exit;
 }
 
@@ -15,7 +15,7 @@ $data = mysqli_fetch_assoc($query);
 
 // Jika data tidak ditemukan, kembalikan
 if (!$data) {
-    header("Location: brands.php");
+    header("Location: brands");
     exit;
 }
 
@@ -34,7 +34,7 @@ if (isset($_POST['update'])) {
         if ($update) {
             // Set notifikasi sukses untuk ditampilkan di halaman brands.php
             $_SESSION['notif'] = ['type' => 'success', 'text' => 'Brand berhasil diperbarui!'];
-            header("Location: brands.php");
+            header("Location: brands");
             exit;
         } else {
             $error = "Gagal mengupdate data.";
