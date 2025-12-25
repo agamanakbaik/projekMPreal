@@ -14,6 +14,6 @@ session_destroy();
 // CATATAN: Sesuaikan path ini. 
 // Jika logout.php ada di dalam folder 'admin', gunakan '../index.php'
 // Jika logout.php ada di folder utama, gunakan 'index.php'
-header("Location: ../index"); 
+header("Location: ../login"); 
 exit;
 ?>

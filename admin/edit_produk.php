@@ -10,18 +10,43 @@ if (!isset($_SESSION['status_login']) || $_SESSION['status_login'] != true) {
 
 $id = $_GET['id'];
 
-// PROSES UPDATE DATA UTAMA
+// ==================================================================
+// 1. PROSES HAPUS SALAH SATU FOTO GALERI
+// ==================================================================
+if (isset($_GET['hapus_gambar'])) {
+    $id_img = $_GET['hapus_gambar'];
+    
+    // Ambil nama file dulu buat dihapus dari folder
+    $q_cek = mysqli_query($conn, "SELECT nama_gambar FROM product_images WHERE id='$id_img'");
+    $d_cek = mysqli_fetch_assoc($q_cek);
+    
+    if ($d_cek) {
+        $path = "../assets/img/" . $d_cek['nama_gambar'];
+        if (file_exists($path)) {
+            unlink($path); // Hapus file fisik
+        }
+        // Hapus dari database
+        mysqli_query($conn, "DELETE FROM product_images WHERE id='$id_img'");
+        $_SESSION['notif'] = ['type' => 'success', 'text' => 'Foto galeri berhasil dihapus!'];
+    }
+    header("Location: edit_produk?id=$id");
+    exit;
+}
+
+// ==================================================================
+// 2. PROSES UPDATE DATA UTAMA & UPLOAD GALERI BARU
+// ==================================================================
 if (isset($_POST['update_produk'])) {
     $nama      = mysqli_real_escape_string($conn, $_POST['nama']);
     $deskripsi = mysqli_real_escape_string($conn, $_POST['deskripsi']);
     
-    // Cek ganti foto
+    // A. UPDATE INFO DASAR & COVER
     if (!empty($_FILES['foto']['name'])) {
         $foto      = $_FILES['foto']['name'];
         $tmp_foto  = $_FILES['foto']['tmp_name'];
-        $foto_baru = date('dmYHis') . $foto; // Rename biar unik
+        $foto_baru = date('dmYHis') . '_cover_' . $foto; 
         
-        // Hapus foto lama
+        // Hapus foto cover lama
         $q_lama = mysqli_query($conn, "SELECT foto FROM products WHERE id='$id'");
         $d_lama = mysqli_fetch_assoc($q_lama);
         if(file_exists("../assets/img/".$d_lama['foto'])){
@@ -33,17 +58,37 @@ if (isset($_POST['update_produk'])) {
     } else {
         $query = "UPDATE products SET nama_produk='$nama', deskripsi='$deskripsi' WHERE id='$id'";
     }
-    
-    if(mysqli_query($conn, $query)){
-        $_SESSION['notif'] = ['type' => 'success', 'text' => 'Data Produk Berhasil Diupdate!'];
-    } else {
-        $_SESSION['notif'] = ['type' => 'error', 'text' => 'Gagal mengupdate data.'];
+    mysqli_query($conn, $query);
+
+    // B. UPLOAD GALERI TAMBAHAN (JIKA ADA)
+    if(isset($_FILES['foto_galeri']) && !empty($_FILES['foto_galeri']['name'][0])) {
+        $total_files = count($_FILES['foto_galeri']['name']);
+        
+        for($i = 0; $i < $total_files; $i++) {
+            $nama_file = $_FILES['foto_galeri']['name'][$i];
+            $tmp_file  = $_FILES['foto_galeri']['tmp_name'][$i];
+            $error     = $_FILES['foto_galeri']['error'][$i];
+
+            if($error === 0) {
+                // Beri nama unik
+                $nama_baru_galeri = time() . '_' . $i . '_' . $nama_file;
+                $tujuan = '../assets/img/' . $nama_baru_galeri;
+
+                if(move_uploaded_file($tmp_file, $tujuan)) {
+                    mysqli_query($conn, "INSERT INTO product_images (product_id, nama_gambar) VALUES ('$id', '$nama_baru_galeri')");
+                }
+            }
+        }
     }
+
+    $_SESSION['notif'] = ['type' => 'success', 'text' => 'Produk & Galeri Berhasil Diupdate!'];
     header("Location: edit_produk?id=$id");
     exit;
 }
 
-// PROSES TAMBAH VARIAN
+// ==================================================================
+// 3. PROSES TAMBAH VARIAN
+// ==================================================================
 if (isset($_POST['tambah_varian'])) {
     $ukuran = mysqli_real_escape_string($conn, $_POST['ukuran']);
     $harga  = $_POST['harga_varian'];
@@ -55,7 +100,9 @@ if (isset($_POST['tambah_varian'])) {
     exit;
 }
 
-// PROSES HAPUS VARIAN
+// ==================================================================
+// 4. PROSES HAPUS VARIAN
+// ==================================================================
 if (isset($_GET['hapus_varian'])) {
     $id_var = $_GET['hapus_varian'];
     mysqli_query($conn, "DELETE FROM product_variants WHERE id='$id_var'");
@@ -64,10 +111,18 @@ if (isset($_GET['hapus_varian'])) {
     exit;
 }
 
-// AMBIL DATA (Taruh di bawah proses update agar data refresh)
+// ==================================================================
+// AMBIL SEMUA DATA
+// ==================================================================
+// 1. Data Produk
 $q_prod = mysqli_query($conn, "SELECT * FROM products WHERE id='$id'");
 $data   = mysqli_fetch_assoc($q_prod);
+
+// 2. Data Varian
 $q_var  = mysqli_query($conn, "SELECT * FROM product_variants WHERE product_id='$id' ORDER BY harga_jual ASC");
+
+// 3. Data Galeri Foto
+$q_galeri = mysqli_query($conn, "SELECT * FROM product_images WHERE product_id='$id'");
 ?>
 
 <!DOCTYPE html>
@@ -120,7 +175,7 @@ $q_var  = mysqli_query($conn, "SELECT * FROM product_variants WHERE product_id='
                         </div>
 
                         <div class="mb-6">
-                            <label class="block text-sm font-bold text-gray-700 mb-2">Foto Produk</label>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">Foto Utama (Cover)</label>
                             <div class="flex items-center gap-4">
                                 <div class="w-20 h-20 rounded-lg border p-1 bg-gray-50 shrink-0">
                                     <?php if(!empty($data['foto'])): ?>
@@ -131,13 +186,48 @@ $q_var  = mysqli_query($conn, "SELECT * FROM product_variants WHERE product_id='
                                 </div>
                                 <div class="w-full">
                                     <input type="file" name="foto" class="w-full border px-3 py-2 rounded-lg text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer">
-                                    <p class="text-xs text-gray-400 mt-1">*Biarkan kosong jika tidak ingin mengganti foto.</p>
+                                    <p class="text-xs text-gray-400 mt-1">*Upload untuk mengganti cover halaman depan.</p>
                                 </div>
                             </div>
                         </div>
 
+                        <div class="mb-6 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <label class="block text-sm font-bold text-gray-700 mb-2">Galeri Tambahan (Slider)</label>
+                            
+                            <div class="grid grid-cols-4 md:grid-cols-5 gap-3 mb-4">
+                                <?php if(mysqli_num_rows($q_galeri) > 0): ?>
+                                    <?php while($g = mysqli_fetch_assoc($q_galeri)): ?>
+                                        <div class="relative group aspect-square bg-white rounded-lg border overflow-hidden">
+                                            <?php $ext = strtolower(pathinfo($g['nama_gambar'], PATHINFO_EXTENSION)); ?>
+                                            
+                                            <?php if(in_array($ext, ['mp4','webm'])): ?>
+                                                <video src="../assets/img/<?= $g['nama_gambar'] ?>" class="w-full h-full object-cover"></video>
+                                                <div class="absolute inset-0 flex items-center justify-center bg-black/20 text-white text-xs"><i class="fas fa-video"></i></div>
+                                            <?php else: ?>
+                                                <img src="../assets/img/<?= $g['nama_gambar'] ?>" class="w-full h-full object-cover">
+                                            <?php endif; ?>
+
+                                            <a href="javascript:void(0)" onclick="hapusGambar(<?= $g['id'] ?>)" 
+                                               class="absolute top-1 right-1 bg-red-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition shadow hover:bg-red-600">
+                                                <i class="fas fa-times"></i>
+                                            </a>
+                                        </div>
+                                    <?php endwhile; ?>
+                                <?php else: ?>
+                                    <p class="col-span-4 text-xs text-gray-400 italic">Belum ada foto tambahan.</p>
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="w-full">
+                                <label class="text-xs font-bold text-gray-500 mb-1 block">Tambah Foto/Video Baru:</label>
+                                <input type="file" name="foto_galeri[]" multiple 
+                                    class="w-full border px-3 py-2 rounded-lg text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
+                                <p class="text-xs text-gray-400 mt-1">*Tahan tombol <b>CTRL</b> untuk memilih banyak file sekaligus.</p>
+                            </div>
+                        </div>
+
                         <button type="submit" name="update_produk" class="w-full bg-primary hover:bg-primaryHover text-white font-bold py-3 rounded-lg shadow transition transform hover:-translate-y-0.5">
-                            <i class="fas fa-save mr-2"></i> Simpan Perubahan Utama
+                            <i class="fas fa-save mr-2"></i> Simpan Semua Perubahan
                         </button>
                     </form>
                 </div>
@@ -225,7 +315,7 @@ $q_var  = mysqli_query($conn, "SELECT * FROM product_variants WHERE product_id='
         function hapusVarian(id) {
             Swal.fire({
                 title: 'Hapus Varian?',
-                text: "Harga dan ukuran ini akan hilang!",
+                text: "Data varian ini akan hilang!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
@@ -235,6 +325,24 @@ $q_var  = mysqli_query($conn, "SELECT * FROM product_variants WHERE product_id='
             }).then((result) => {
                 if (result.isConfirmed) {
                     window.location.href = "?id=<?= $id ?>&hapus_varian=" + id;
+                }
+            })
+        }
+
+        // Fungsi Konfirmasi Hapus Gambar Galeri
+        function hapusGambar(id) {
+            Swal.fire({
+                title: 'Hapus Foto?',
+                text: "Foto ini akan dihapus dari galeri!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "?id=<?= $id ?>&hapus_gambar=" + id;
                 }
             })
         }
