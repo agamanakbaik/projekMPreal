@@ -1,0 +1,15 @@
+RewriteEngine On
+RewriteBase /
+
+# 1. HILANGKAN "index.php"
+RewriteCond %{THE_REQUEST} ^.*/index\.php
+RewriteRule ^(.*)index\.php$ $1 [R=301,L]
+
+# 2. HILANGKAN EKSTENSI ".php"
+RewriteCond %{THE_REQUEST} \s/+(.+?)\.php[\s?] [NC]
+RewriteRule ^ /%1 [R=301,L,NE]
+
+# 3. MENGHUBUNGKAN URL CANTIK KE FILE ASLI
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.php -f
+RewriteRule ^(.*)$ $1.php [L]
